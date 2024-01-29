@@ -44,6 +44,8 @@ export class EmployeeComponent {
   }
 
   onDelete(employee: Employee): void {
+    // can only delete direct reports from an employee.
+    // In order to remove a sub-report, you must first remove it from the supervisor's direct reports.
     if (this.isDirectReport(employee)) {
       this.emitter.emit({
         employee: employee,
@@ -67,6 +69,7 @@ export class EmployeeComponent {
     }
 
     return from(directReports).pipe(
+      // map each report id to an observable of the employee object
       concatMap((reportId) =>
         this.employeeService.get(reportId).pipe(
           catchError((error) => {
@@ -76,10 +79,12 @@ export class EmployeeComponent {
         )
       ),
       mergeMap((report) =>
+        // recursively fetch all reports for this report
         this.reports(report.directReports).pipe(
           map((subReports) => [report, ...subReports])
         )
       ),
+      // reduce the array of arrays into a single array
       reduce((acc, reports) => [...acc, ...reports], []),
       takeUntil(this.destroy$)
     );

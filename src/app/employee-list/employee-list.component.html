@@ -1,5 +1,10 @@
-<mat-grid-list class="employee-list" cols="4">
-  <mat-grid-tile *ngFor="let emp of employees">
-    <app-employee [employee]="emp"></app-employee>
+<mat-grid-list class="employee-list" cols="2" gutterSize="10px">
+  <mat-grid-tile *ngFor="let employee of employees$ | async">
+    <div class="employee-outer">
+      <app-employee
+        [employee]="employee"
+        (emitter)="handleEvent($event)"
+      ></app-employee>
+    </div>
   </mat-grid-tile>
 </mat-grid-list>

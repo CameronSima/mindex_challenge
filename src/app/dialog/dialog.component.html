@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Dialog Title</h2>
+<mat-dialog-content>
+  <ng-container [ngSwitch]="data.event.type">
+    <ng-container *ngSwitchCase="'delete'">
+      <ng-container *ngTemplateOutlet="delete"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'update'">
+      <ng-container *ngTemplateOutlet="update"></ng-container>
+    </ng-container>
+  </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Close</button>
+  <ng-container [ngSwitch]="data.event.type">
+    <ng-container *ngSwitchCase="'delete'">
+      <button mat-button color="warn" (click)="onDelete()">Delete</button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'update'">
+      <button mat-button color="primary" (click)="onUpdate()">Update</button>
+    </ng-container>
+  </ng-container>
+</mat-dialog-actions>
+
+<ng-template #delete>
+  <p>
+    Are you sure you want to delete {{ data.event.employee.firstName }}
+    {{ data.event.employee.lastName }} as a report to
+    {{ data.event.supervisor.firstName }} {{ data.event.supervisor.lastName }}?
+  </p>
+</ng-template>
+
+<ng-template #update>
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="lastName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Compensation</mat-label>
+      <input matInput formControlName="compensation" />
+    </mat-form-field>
+  </form>
+</ng-template>

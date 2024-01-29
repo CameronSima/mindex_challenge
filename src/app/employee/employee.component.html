@@ -1,12 +1,52 @@
 <mat-card class="employee">
   <mat-card-header>
-    <mat-card-title>{{employee.lastName}}, {{employee.firstName}}</mat-card-title>
-    <mat-card-subtitle>{{employee.id}}</mat-card-subtitle>
+    <mat-card-title
+      >{{ employee.lastName }}, {{ employee.firstName }}</mat-card-title
+    >
+    <mat-card-subtitle>{{ employee.id }}</mat-card-subtitle>
+    <mat-card-subtitle *ngIf="allReports$ | async as reports">
+      Num reports: {{ reports.length }}
+    </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <dl>
-      <dt>Job Title</dt>
-      <dd>{{employee.position}}</dd>
-    </dl>
+    <h3>Job Title</h3>
+    <p>{{ employee.position }}</p>
+    <h3>Compensation</h3>
+    <p>{{ employee.compensation }}</p>
+
+    <mat-expansion-panel *ngIf="(allReports$ | async)?.length > 0">
+      <mat-expansion-panel-header>
+        <mat-panel-title> Reports </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-list *ngFor="let report of allReports$ | async">
+        <mat-list-item>
+          <h4>{{ report.lastName }}, {{ report.firstName }}</h4>
+          <div class="buttons">
+            <button
+              id="delete-{{ report.id }}"
+              [title]="
+                isDirectReport(report)
+                  ? ''
+                  : 'You can only delete your direct reports'
+              "
+              mat-raised-button
+              color="warn"
+              [disabled]="!isDirectReport(report)"
+              (click)="onDelete(report)"
+            >
+              Delete
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="onUpdate(report)"
+            >
+              Update
+            </button>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
   </mat-card-content>
 </mat-card>
